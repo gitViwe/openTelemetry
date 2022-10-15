@@ -1,0 +1,15 @@
+﻿receivers:
+  otlp:
+    protocols:
+      http:
+exporters:
+  logging:
+    loglevel: debug
+processors:
+  batch:
+service:
+  pipelines:
+    traces:
+      receivers: [otlp]
+      exporters: [logging]
+      processors: [batch]
