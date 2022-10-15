@@ -24,7 +24,7 @@ internal static class OpenTelemetryConfiguration
             .AddZipkinExporter(options =>
             {
                 // not needed, it's the default
-                options.Endpoint = new Uri("http://localhost:9411/api/v2/spans");
+                options.Endpoint = new Uri("http://localhost:9411");
             })
             .AddSource(_serviceName)
             .SetResourceBuilder(ResourceBuilder.CreateDefault().AddService(_serviceName, serviceVersion: _serviceVersion))
