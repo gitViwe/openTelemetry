@@ -1,0 +1,15 @@
+version: "3.9"
+services:
+  aspnetdemo:
+    build:
+        context: src/ASPNETDemo
+        dockerfile: Dockerfile
+    environment:
+        ASPNETCORE_ENVIRONMENT: Development
+    ports:
+      - 7143:80
+      - 5143:443
+  zipkin:
+    image: "openzipkin/zipkin"
+    ports:
+      - 9411:9411

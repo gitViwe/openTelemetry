@@ -4,10 +4,10 @@ using System.Diagnostics;
 var builder = WebApplication.CreateBuilder(args);
 
 // Add services to the container.
+builder.Services.AddOpenTelemetryTracingDemo();
 // Learn more about configuring Swagger/OpenAPI at https://aka.ms/aspnetcore/swashbuckle
 builder.Services.AddEndpointsApiExplorer();
 builder.Services.AddSwaggerGen();
-builder.Services.AddOpenTelemetryTracingDemo();
 
 var app = builder.Build();
 
@@ -30,11 +30,12 @@ var summaries = new[]
 app.MapGet("/weatherforecast", () =>
 {
     using var activity = activitySource.StartActivity("Start tag activity", ActivityKind.Internal);
-    activity?.SetTag("event 1 resource", new { Id = 1245, IsValid = true });
-    activity?.SetTag("event 1 state", "Pending");
-    activity?.SetTag("event 1 succeeded", true);
+    activity?.SetTag("weatherforecast API call start", string.Empty);
 
-    var forecast = Enumerable.Range(1, 5).Select(index =>
+    var forecast = Array.Empty<WeatherForecast>();
+    activity?.SetTag("weatherforecast pre-process state", forecast);
+
+    forecast = Enumerable.Range(1, 5).Select(index =>
         new WeatherForecast
         (
             DateTime.Now.AddDays(index),
@@ -42,6 +43,9 @@ app.MapGet("/weatherforecast", () =>
             summaries[Random.Shared.Next(summaries.Length)]
         ))
         .ToArray();
+
+    activity?.SetTag("weatherforecast post-process state", forecast);
+    
     return forecast;
 })
 .WithName("GetWeatherForecast");

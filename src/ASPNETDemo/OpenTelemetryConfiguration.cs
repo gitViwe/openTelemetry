@@ -20,17 +20,16 @@ internal static class OpenTelemetryConfiguration
         services.AddOpenTelemetryTracing(tracerProvider =>
         {
             tracerProvider
-            .AddConsoleExporter()
+            .AddSource(_serviceName)
+            .SetResourceBuilder(ResourceBuilder.CreateDefault().AddService(_serviceName, serviceVersion: _serviceVersion))
             .AddZipkinExporter(options =>
             {
                 // not needed, it's the default
-                options.Endpoint = new Uri("http://localhost:9411");
+                options.Endpoint = new Uri("http://localhost:9411/api/v2/spans");
             })
-            .AddSource(_serviceName)
-            .SetResourceBuilder(ResourceBuilder.CreateDefault().AddService(_serviceName, serviceVersion: _serviceVersion))
+            .AddConsoleExporter()
             .AddHttpClientInstrumentation()
-            .AddAspNetCoreInstrumentation()
-            .AddSqlClientInstrumentation();
+            .AddAspNetCoreInstrumentation();
         });
 
         return services;
