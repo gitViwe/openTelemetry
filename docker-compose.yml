@@ -1,5 +1,12 @@
 version: "3.9"
+
 services:
+
+  zipkin:
+    image: "openzipkin/zipkin"
+    ports:
+      - 9411:9411
+
   aspnetdemo:
     build:
         context: src/ASPNETDemo
@@ -9,7 +16,5 @@ services:
     ports:
       - 7143:80
       - 5143:443
-  zipkin:
-    image: "openzipkin/zipkin"
-    ports:
-      - 9411:9411
+    links:
+      - zipkin:dockerhost

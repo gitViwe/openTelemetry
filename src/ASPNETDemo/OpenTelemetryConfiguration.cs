@@ -25,7 +25,7 @@ internal static class OpenTelemetryConfiguration
             .AddZipkinExporter(options =>
             {
                 // not needed, it's the default
-                options.Endpoint = new Uri("http://localhost:9411/api/v2/spans");
+                options.Endpoint = new Uri("http://dockerhost:9411/api/v2/spans");
             })
             .AddConsoleExporter()
             .AddHttpClientInstrumentation()
