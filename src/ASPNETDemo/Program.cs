@@ -29,13 +29,18 @@ var summaries = new[]
 
 app.MapGet("/weatherforecast", () =>
 {
-    using var activity = activitySource.StartActivity("Start tag activity", ActivityKind.Internal);
-    activity?.SetTag("weatherforecast API call start", string.Empty);
+    using var activity = activitySource.StartActivity("weatherforecast activity", ActivityKind.Internal);
 
-    var forecast = Array.Empty<WeatherForecast>();
-    activity?.SetTag("weatherforecast pre-process state", forecast);
+    var tagCollection = new List<KeyValuePair<string, object>>()
+    {
+        KeyValuePair.Create<string, object>("Item 1", "0001"),
+        KeyValuePair.Create<string, object>("Item 2", "0002"),
+        KeyValuePair.Create<string, object>("Item 3", "0003")
+    };
 
-    forecast = Enumerable.Range(1, 5).Select(index =>
+    activity?.AddEvent(new ActivityEvent("Requested weather report", tags: new ActivityTagsCollection(tagCollection!)));
+
+    var forecast = Enumerable.Range(1, 5).Select(index =>
         new WeatherForecast
         (
             DateTime.Now.AddDays(index),
@@ -44,8 +49,8 @@ app.MapGet("/weatherforecast", () =>
         ))
         .ToArray();
 
-    activity?.SetTag("weatherforecast post-process state", forecast);
-    
+    activity?.SetTag("Item 3", "0003");
+
     return forecast;
 })
 .WithName("GetWeatherForecast");

@@ -1,0 +1,32 @@
+﻿@page "/"
+@inject HttpClient _httpClient;
+
+<EditForm Model=Model OnSubmit="SubmitAsync">
+
+    <MudTextField Label="Result will be displayed here"
+                  Variant="Variant.Outlined"
+                  Disabled=true
+                  @bind-Value=Model.Response
+                  Class="my-6" />
+
+    <MudStack Spacing="2">
+        <MudButton ButtonType="ButtonType.Submit" 
+                   Variant="Variant.Filled"
+                   Color="Color.Primary"
+                   Size="Size.Large"
+                   Disabled = "_processing"
+                   FullWidth="true">
+            @if(_processing)
+            {
+                <MudProgressCircular Class="ms-n1" Size="Size.Small" Indeterminate="true"/>
+                <MudText Class="ms-2">Processing</MudText>
+            }
+            else
+            {
+                <MudText>
+                    Press me
+                </MudText>
+            }
+        </MudButton>
+    </MudStack>
+</EditForm>
