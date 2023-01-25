@@ -7,14 +7,38 @@ services:
     ports:
       - 9411:9411
 
-  aspnetdemo:
-    build:
-        context: src/ASPNETDemo
-        dockerfile: Dockerfile
-    environment:
-        ASPNETCORE_ENVIRONMENT: Development
+  jaeger:
+    image: jaegertracing/all-in-one:1
+    hostname: jaeger
+    container_name: jaeger
     ports:
-      - 7143:80
-      - 5143:443
-    links:
-      - zipkin:dockerhost
+      - "6831:6831/udp" # accepts jaeger.thrift over compact thrift protocol
+      - "16686:16686" # ui
+
+  postgres:
+    image: "postgres:13-alpine"
+    hostname: "postgres"
+    container_name: postgres
+    ports:
+      - "5432:5432"
+    environment:
+        POSTGRES_USER: "user"
+        POSTGRES_PASSWORD: "pass"
+  
+  rabbitmq:
+    image: rabbitmq:3-management
+    hostname: rabbitmq
+    container_name: rabbitmq
+    ports:
+      - "5672:5672" # rabbit itself
+      - "15672:15672" # management ui
+  
+  seq:
+    image: "datalust/seq:2021"
+    hostname: seq
+    container_name: seq
+    ports:
+      - "5341:5341" # ingestion API
+      - "5555:80" # ui
+    environment:
+        ACCEPT_EULA: "Y"

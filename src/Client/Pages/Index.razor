@@ -3,10 +3,9 @@
 
 <EditForm Model=Model OnSubmit="SubmitAsync">
 
-    <MudTextField Label="Result will be displayed here"
+    <MudTextField Label="Enter a username"
                   Variant="Variant.Outlined"
-                  Disabled=true
-                  @bind-Value=Model.Response
+                  @bind-Value=Model.Username
                   Class="my-6" />
 
     <MudStack Spacing="2">
