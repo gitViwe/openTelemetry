@@ -1,0 +1,17 @@
+syntax = "proto3";
+
+option csharp_namespace = "Shared.Protos";
+
+package landmark;
+
+service Landmarker {
+  rpc ReachLandmark (LandmarkRequest) returns (LandmarkReply);
+}
+
+message LandmarkRequest {
+  string name = 1;
+}
+
+message LandmarkReply {
+  string message = 1;
+}

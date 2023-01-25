@@ -1,0 +1,17 @@
+syntax = "proto3";
+
+option csharp_namespace = "Shared.Protos";
+
+package challenge;
+
+service Challenger {
+  rpc FaceChallenge (ChallengeRequest) returns (ChallengeReply);
+}
+
+message ChallengeRequest {
+  string name = 1;
+}
+
+message ChallengeReply {
+  string message = 1;
+}

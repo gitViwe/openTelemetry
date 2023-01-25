@@ -1,0 +1,17 @@
+syntax = "proto3";
+
+option csharp_namespace = "Shared.Protos";
+
+package pilgrim;
+
+service Pilgrimage {
+  rpc EndPilgrimage (PilgrimRequest) returns (PilgrimReply);
+}
+
+message PilgrimRequest {
+  string name = 1;
+}
+
+message PilgrimReply {
+  string message = 1;
+}
