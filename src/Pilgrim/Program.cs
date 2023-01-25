@@ -1,3 +1,4 @@
+using Microsoft.AspNetCore.Server.Kestrel.Core;
 using Pilgrim.Services;
 using Shared.Pilgrim;
 
@@ -9,6 +10,10 @@ var builder = WebApplication.CreateBuilder(args);
 // Add services to the container.
 builder.Services.AddGrpc();
 builder.Services.AddPilgrimOpenTelemetry();
+builder.WebHost.ConfigureKestrel(options =>
+{
+    options.ListenAnyIP(5235, options => options.Protocols = HttpProtocols.Http2);
+});
 
 var app = builder.Build();
 

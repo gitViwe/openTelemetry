@@ -11,7 +11,7 @@ var builder = WebApplication.CreateBuilder(args);
 builder.Services.AddAPICors();
 builder.Services.AddAPIOpenTelemetry();
 builder.Services.AddAPIMassTransit();
-builder.Services.AddDbContext<JourneyDbContext>(options => options.UseNpgsql("server=localhost;port=5432;user id=user;password=pass;database=journey_database"));
+builder.Services.AddDbContext<JourneyDbContext>(options => options.UseNpgsql("server=postgres;port=5432;user id=user;password=pass;database=journey_database"));
 builder.Services.AddTransient<JourneyStartPublisher>();
 // Learn more about configuring Swagger/OpenAPI at https://aka.ms/aspnetcore/swashbuckle
 builder.Services.AddEndpointsApiExplorer();

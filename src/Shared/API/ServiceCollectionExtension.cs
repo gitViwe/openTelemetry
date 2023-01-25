@@ -31,11 +31,11 @@ public static class ServiceCollectionExtension
                    .AddEntityFrameworkCoreInstrumentation(options => options.SetDbStatementForText = true)
                    .AddZipkinExporter(options =>
                    {
-                       options.Endpoint = new Uri("http://localhost:9411/api/v2/spans");
+                       options.Endpoint = new Uri("http://zipkin:9411/api/v2/spans");
                    })
                    .AddJaegerExporter(options =>
                    {
-                       options.AgentHost = "localhost";
+                       options.AgentHost = "jaeger";
                        options.AgentPort = 6831;
                    });
         }).StartWithHost();
@@ -69,7 +69,7 @@ public static class ServiceCollectionExtension
         {
             configure.UsingRabbitMq((context, config) =>
             {
-                config.Host("localhost", host =>
+                config.Host("rabbitmq", host =>
                 {
                     host.Username("guest");
                     host.Password("guest");

@@ -31,11 +31,11 @@ public static class ServiceCollectionExtension
                    })
                    .AddZipkinExporter(options =>
                    {
-                       options.Endpoint = new Uri("http://localhost:9411/api/v2/spans");
+                       options.Endpoint = new Uri("http://zipkin:9411/api/v2/spans");
                    })
                    .AddJaegerExporter(options =>
                    {
-                       options.AgentHost = "localhost";
+                       options.AgentHost = "jaeger";
                        options.AgentPort = 6831;
                    });
         }).StartWithHost();
@@ -45,17 +45,17 @@ public static class ServiceCollectionExtension
     {
         services.AddGrpcClient<Landmarker.LandmarkerClient>(options =>
         {
-            options.Address = new Uri("http://localhost:5251");
+            options.Address = new Uri("http://landmark:5251");
         });
 
         services.AddGrpcClient<Challenger.ChallengerClient>(options =>
         {
-            options.Address = new Uri("http://localhost:5249");
+            options.Address = new Uri("http://challenge:5249");
         });
 
         services.AddGrpcClient<Pilgrimage.PilgrimageClient>(options =>
         {
-            options.Address = new Uri("http://localhost:5235");
+            options.Address = new Uri("http://pilgrim:5235");
         });
     }
 }

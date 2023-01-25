@@ -1,4 +1,5 @@
 using Challenge.Services;
+using Microsoft.AspNetCore.Server.Kestrel.Core;
 using Shared.Challenge;
 
 var builder = WebApplication.CreateBuilder(args);
@@ -9,6 +10,10 @@ var builder = WebApplication.CreateBuilder(args);
 // Add services to the container.
 builder.Services.AddGrpc();
 builder.Services.AddChallengeOpenTelemetry();
+builder.WebHost.ConfigureKestrel(options =>
+{
+    options.ListenAnyIP(5249, options => options.Protocols = HttpProtocols.Http2);
+});
 
 var app = builder.Build();
 

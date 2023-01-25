@@ -18,7 +18,7 @@ using IHost host = Host.CreateDefaultBuilder(args)
             configure.AddConsumers(Assembly.GetExecutingAssembly());
             configure.UsingRabbitMq((context, config) =>
             {
-                config.Host("localhost", host =>
+                config.Host("rabbitmq", host =>
                 {
                     host.Username("guest");
                     host.Password("guest");
