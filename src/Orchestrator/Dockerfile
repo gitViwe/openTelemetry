@@ -4,15 +4,17 @@ EXPOSE 443
 
 WORKDIR /src
 
-COPY ./OpenTelemetry.sln .
-COPY ./src/Orchestrator/Orchestrator.csproj ./src/Orchestrator/
-COPY ./src/Shared/Shared.csproj ./src/Shared/
+COPY ["Orchestrator/Orchestrator.csproj", "Orchestrator/"]
+COPY ["Shared/Shared.csproj", "Shared/"]
 
-RUN dotnet restore
+RUN dotnet restore "Orchestrator/Orchestrator.csproj"
 
 COPY . .
+WORKDIR "/src/Orchestrator"
+RUN dotnet build "Orchestrator.csproj" -c Release -o /app/build
 
-RUN dotnet publish --no-restore -c Release -o /published src/Orchestrator/Orchestrator.csproj
+FROM build AS publish
+RUN dotnet publish "Orchestrator.csproj" --no-restore -c Release -o /published
 
 FROM mcr.microsoft.com/dotnet/aspnet:7.0 as runtime
 
@@ -21,6 +23,6 @@ FROM mcr.microsoft.com/dotnet/aspnet:7.0 as runtime
 
 WORKDIR /app
 
-COPY --from=build /published .
+COPY --from=publish /published .
 
 ENTRYPOINT [ "dotnet", "Orchestrator.dll" ]

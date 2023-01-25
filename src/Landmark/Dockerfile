@@ -4,23 +4,26 @@ EXPOSE 443
 
 WORKDIR /src
 
-COPY ./OpenTelemetry.sln .
-COPY ./src/Landmark/Landmark.csproj ./src/Landmark/
-COPY ./src/Shared/Shared.csproj ./src/Shared/
+COPY ["Landmark/Landmark.csproj", "Landmark/"]
+COPY ["Shared/Shared.csproj", "Shared/"]
 
-RUN dotnet restore
+RUN dotnet restore "Landmark/Landmark.csproj"
 
 COPY . .
+WORKDIR "/src/Landmark"
+RUN dotnet build "Landmark.csproj" -c Release -o /app/build
 
-RUN dotnet publish --no-restore -c Release -o /published src/Landmark/Landmark.csproj
+FROM build AS publish
+RUN dotnet publish "Landmark.csproj" --no-restore -c Release -o /published
 
 FROM mcr.microsoft.com/dotnet/aspnet:7.0 as runtime
 
 # Uncomment the line below if running with HTTPS
 # ENV ASPNETCORE_URLS=https://+:443
+ENV ASPNETCORE_URLS=https://+:80
 
 WORKDIR /app
 
-COPY --from=build /published .
+COPY --from=publish /published .
 
 ENTRYPOINT [ "dotnet", "Landmark.dll" ]

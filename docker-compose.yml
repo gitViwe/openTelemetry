@@ -2,6 +2,63 @@ version: "3.9"
 
 services:
 
+  journey-api:
+    hostname: journey-api
+    container_name: journey-api
+    build:
+        context: src/
+        dockerfile: API/Dockerfile
+    environment:
+        ASPNETCORE_ENVIRONMENT: Development
+    ports:
+      - 5043:80
+      - 7114:443
+
+  orchestrator:
+    hostname: orchestrator
+    container_name: orchestrator
+    build:
+        context: src/
+        dockerfile: Orchestrator/Dockerfile
+    environment:
+        ASPNETCORE_ENVIRONMENT: Development
+
+  challenge-service:
+    hostname: challenge
+    container_name: challenge
+    build:
+        context: src/
+        dockerfile: Challenge/Dockerfile
+    environment:
+        ASPNETCORE_ENVIRONMENT: Development
+    ports:
+      - 5249:80
+      - 7221:443
+
+  landmark-service:
+    hostname: landmark
+    container_name: landmark
+    build:
+        context: src/
+        dockerfile: Landmark/Dockerfile
+    environment:
+        ASPNETCORE_ENVIRONMENT: Development
+    ports:
+      - 5251:80
+      - 7120:443
+
+  pilgrim-service:
+    hostname: pilgrim
+    container_name: pilgrim
+    build:
+        context: src/
+        dockerfile: Pilgrim/Dockerfile
+    environment:
+        ASPNETCORE_ENVIRONMENT: Development
+    ports:
+      - 5235:80
+      - 7103:443
+
   zipkin:
     image: "openzipkin/zipkin"
     hostname: zipkin

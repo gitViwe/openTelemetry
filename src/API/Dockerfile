@@ -4,15 +4,17 @@ EXPOSE 443
 
 WORKDIR /src
 
-COPY ./OpenTelemetry.sln .
-COPY ./src/API/API.csproj ./src/API/
-COPY ./src/Shared/Shared.csproj ./src/Shared/
+COPY ["API/API.csproj", "API/"]
+COPY ["Shared/Shared.csproj", "Shared/"]
 
-RUN dotnet restore
+RUN dotnet restore "API/API.csproj"
 
 COPY . .
+WORKDIR "/src/API"
+RUN dotnet build "API.csproj" -c Release -o /app/build
 
-RUN dotnet publish --no-restore -c Release -o /published src/API/API.csproj
+FROM build AS publish
+RUN dotnet publish "API.csproj" --no-restore -c Release -o /published
 
 FROM mcr.microsoft.com/dotnet/aspnet:7.0 as runtime
 
@@ -21,6 +23,6 @@ FROM mcr.microsoft.com/dotnet/aspnet:7.0 as runtime
 
 WORKDIR /app
 
-COPY --from=build /published .
+COPY --from=publish /published .
 
 ENTRYPOINT [ "dotnet", "API.dll" ]

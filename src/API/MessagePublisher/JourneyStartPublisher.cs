@@ -23,7 +23,7 @@ public class JourneyStartPublisher
         var headers = new Dictionary<string, object>();
         PropagateContext(headers);
 
-        var endpoint = await _bus.GetSendEndpoint(new Uri("rabbitmq://localhost/journeyQueue"));
+        var endpoint = await _bus.GetSendEndpoint(new Uri("rabbitmq://rabbitmq/journeyQueue"));
         await endpoint.Send(new JourneyMessage(entry.Id, entry.Username, entry.CreatedAt), context =>
         {
             foreach (var item in headers)
