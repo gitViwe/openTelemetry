@@ -7,6 +7,7 @@ namespace Pilgrim.Services
     {
         public override Task<PilgrimReply> EndPilgrimage(PilgrimRequest request, ServerCallContext context)
         {
+            //throw new RpcException(new Status(StatusCode.Aborted, detail: "Some detail about the cause of the failure."));
             return Task.FromResult(new PilgrimReply
             {
                 Message = "Well done " + request.Name + ". Your journe has come to an end."

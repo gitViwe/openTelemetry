@@ -4,6 +4,8 @@ services:
 
   zipkin:
     image: "openzipkin/zipkin"
+    hostname: zipkin
+    container_name: zipkin
     ports:
       - 9411:9411
 
@@ -42,3 +44,4 @@ services:
       - "5555:80" # ui
     environment:
         ACCEPT_EULA: "Y"
+
