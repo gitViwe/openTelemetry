@@ -1,24 +1,34 @@
+<!-- ABOUT THE PROJECT -->
 # OpenTelemetry
 OpenTelemetry, also known as OTel for short, is a vendor-neutral open-source Observability framework for instrumenting, generating, collecting, and exporting telemetry data such as traces, metrics, logs. As an industry-standard it is natively supported by a number of vendors.
 
-### Built With
 
-* [.NET 6](https://devblogs.microsoft.com/dotnet/announcing-net-6/)
-* [ASP.NET Web API](https://dotnet.microsoft.com/apps/aspnet/apis)
-
+<!-- GETTING STARTED -->
 ## Getting Started
 
-This is quite a small project, just a console app and minimal API. Here is how to get it running.
+This is an example of how you may give instructions on setting up your project locally.
+To get a local copy up and running follow these simple example steps.
 
 ### Prerequisites
 
 Things you need to use the software and how to install them.
-* [Visual Studio](https://visualstudio.microsoft.com/)
-* [.NET 6](https://dotnet.microsoft.com/en-us/download/dotnet/6.0)
+* [Visual Studio / Visual Studio Code](https://visualstudio.microsoft.com/)
+* [.NET 7](https://devblogs.microsoft.com/dotnet/announcing-dotnet-7/)
+* [Docker](https://www.docker.com/)
 
 ### Installation
 
 1. Clone the repo
    ```sh
-   git clone https://github.com/gitViwe/CleanArchitecture.git
+   git clone https://github.com/gitViwe/openTelemetry.git
    ```
+2. Run via Docker
+   ```
+   cd opentelemetry
+   docker compose up -d
+   ```
+
+### Then navigate to [http://localhost:5043/swagger](http://localhost:5043/swagger) and send a request.
+### You can view traces via Jaeger at [http://localhost:16686](http://localhost:16686) or Zipkin at [http://localhost:9411](http://localhost:9411)
+guest### You can access RabittMQ UI at [http://localhost:515672](http://localhost:15672) Username: `guest` Password: `guest`
+### You can access SEQ UI at [http://localhost:5555](http://localhost:5555)
