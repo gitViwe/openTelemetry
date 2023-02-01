@@ -11,7 +11,7 @@ using IHost host = Host.CreateDefaultBuilder(args)
     {
         services.AddOrchestratorOpenTelemetry();
         services.AddLogging(builder => builder.AddSeq());
-        services.RegisterLandMarkGrpcClient();
+        services.RegisterOrchestratorGrpcClient();
 
         services.AddMassTransit(configure =>
         {
