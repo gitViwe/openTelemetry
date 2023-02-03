@@ -36,6 +36,7 @@ public class JourneyStartPublisher
     private static void PropagateContext(Dictionary<string, object> headers)
     {
         using var activity = ActivitySource.StartActivity("journey message publishing", ActivityKind.Producer);
+        activity?.AddEvent(new ActivityEvent("Propagating the activity context via message headers."));
         ActivityContext contextToInject = activity?.Context ?? Activity.Current?.Context ?? default;
 
         // Inject the ActivityContext into the message headers to propagate trace context to the receiving service.

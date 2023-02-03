@@ -31,17 +31,21 @@ app.UseCors();
 
 app.MapPost("/journey/start", async (JourneyRequest request, [FromServices] JourneyDbContext dbContext, [FromServices] JourneyStartPublisher publisher) =>
 {
+    var activity = Activity.Current;
+    activity?.AddEvent(new ActivityEvent("Recieved request to start journey."));
+    activity?.AddEvent(new ActivityEvent("Ensure database is created and schema is up to date."));
     await dbContext.Database.EnsureCreatedAsync();
 
     var userId = Guid.NewGuid();
-    var activity = Activity.Current;
     activity?.SetTag("api.user.id", userId);
     activity?.SetTag("api.user.username", request.Username);
 
+    activity?.AddEvent(new ActivityEvent("Add journey request to database."));
     var entry = new JourneyEntry(userId, request.Username, DateTime.UtcNow);
     await dbContext.JourneyEntries.AddAsync(entry);
     await dbContext.SaveChangesAsync();
 
+    activity?.AddEvent(new ActivityEvent("Publish journey request message to broker."));
     await publisher.PublishAsync(entry, CancellationToken.None);
 
     Results.Ok();
