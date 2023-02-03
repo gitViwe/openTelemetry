@@ -47,61 +47,21 @@ public static class ServiceCollectionExtension
         services.AddGrpcClient<Landmarker.LandmarkerClient>(options =>
         {
             options.Address = new Uri("http://landmark:5251");
-        }).ConfigureChannel(options =>
-        {
-            options.ServiceConfig = new ServiceConfig()
-            {
-                MethodConfigs =
-                {
-                    new MethodConfig()
-                    {
-                        Names = { MethodName.Default },
-                        RetryPolicy= new RetryPolicy()
-                        {
-                            MaxAttempts = 5,
-                            InitialBackoff= TimeSpan.FromSeconds(2),
-                            MaxBackoff = TimeSpan.FromSeconds(5),
-                            BackoffMultiplier = 1.5,
-                            RetryableStatusCodes = { Grpc.Core.StatusCode.Unknown, Grpc.Core.StatusCode.Unavailable }
-                        }
-                    }
-                }
-
-            };
-        });
+        }).ConfigureChannel(options => options.ServiceConfig = ConfigureClient());
 
         services.AddGrpcClient<Challenger.ChallengerClient>(options =>
         {
             options.Address = new Uri("http://challenge:5249");
-        }).ConfigureChannel(options =>
-        {
-            options.ServiceConfig = new ServiceConfig()
-            {
-                MethodConfigs =
-                {
-                    new MethodConfig()
-                    {
-                        Names = { MethodName.Default },
-                        RetryPolicy= new RetryPolicy()
-                        {
-                            MaxAttempts = 5,
-                            InitialBackoff= TimeSpan.FromSeconds(2),
-                            MaxBackoff = TimeSpan.FromSeconds(5),
-                            BackoffMultiplier = 1.5,
-                            RetryableStatusCodes = { Grpc.Core.StatusCode.Unknown, Grpc.Core.StatusCode.Unavailable }
-                        }
-                    }
-                }
-
-            };
-        });
+        }).ConfigureChannel(options => options.ServiceConfig = ConfigureClient());
 
         services.AddGrpcClient<Pilgrimage.PilgrimageClient>(options =>
         {
             options.Address = new Uri("http://pilgrim:5235");
-        }).ConfigureChannel(options =>
+        }).ConfigureChannel(options => options.ServiceConfig = ConfigureClient());
+
+        static ServiceConfig ConfigureClient()
         {
-            options.ServiceConfig = new ServiceConfig()
+            return new ServiceConfig()
             {
                 MethodConfigs =
                 {
@@ -120,6 +80,6 @@ public static class ServiceCollectionExtension
                 }
 
             };
-        });
+        }
     }
 }
