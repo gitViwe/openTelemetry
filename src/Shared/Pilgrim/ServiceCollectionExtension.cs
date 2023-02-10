@@ -17,10 +17,6 @@ public static class ServiceCollectionExtension
                    .SetResourceBuilder(ResourceBuilder.CreateDefault().AddService(PILGRIM_SOURCE_NAME))
                    .AddHttpClientInstrumentation()
                    .AddAspNetCoreInstrumentation()
-                   .AddZipkinExporter(options =>
-                   {
-                       options.Endpoint = new Uri("http://zipkin:9411/api/v2/spans");
-                   })
                    .AddJaegerExporter(options =>
                    {
                        options.AgentHost = "jaeger";

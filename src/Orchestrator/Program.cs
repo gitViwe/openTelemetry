@@ -1,7 +1,5 @@
 ﻿using MassTransit;
-using Microsoft.Extensions.DependencyInjection;
 using Microsoft.Extensions.Hosting;
-using Microsoft.Extensions.Logging;
 using Orchestrator.MessageConsumer;
 using Shared.Orchestrator;
 using System.Reflection;
@@ -10,7 +8,6 @@ using IHost host = Host.CreateDefaultBuilder(args)
     .ConfigureServices((context, services) =>
     {
         services.AddOrchestratorOpenTelemetry();
-        services.AddLogging(builder => builder.AddSeq());
         services.RegisterOrchestratorGrpcClient();
 
         services.AddMassTransit(configure =>
