@@ -16,7 +16,7 @@ public static class ServiceCollectionExtension
             builder.AddSource(CHALLANGE_SOURCE_NAME)
                    .SetResourceBuilder(ResourceBuilder.CreateDefault().AddService(CHALLANGE_SOURCE_NAME))
                    .AddHttpClientInstrumentation()
-                   .AddAspNetCoreInstrumentation()
+                   .AddAspNetCoreInstrumentation(options => options.RecordException = true)
                    .AddJaegerExporter(options =>
                    {
                        options.AgentHost = "jaeger";
