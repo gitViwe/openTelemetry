@@ -1,11 +1,8 @@
 ﻿using MassTransit;
-using Microsoft.AspNetCore.Http;
 using Microsoft.Extensions.DependencyInjection;
 using OpenTelemetry;
 using OpenTelemetry.Resources;
 using OpenTelemetry.Trace;
-using System.Diagnostics;
-using System.Text.Json;
 
 namespace Shared.API;
 
@@ -43,19 +40,7 @@ public static class ServiceCollectionExtension
                            return !urls.Contains(context.Request.Path.Value);
                        };
 
-                       options.EnrichWithHttpRequest = (activity, request) =>
-                       {
-
-                           if (request.Path.ToString().Contains("/journey/start"))
-                           {
-                               activity?.AddEvent(new ActivityEvent("Recieved request to start journey."));
-                           }
-                       };
-
-                       options.EnrichWithHttpResponse = (activity, response) =>
-                       {
-                           activity?.AddEvent(new ActivityEvent("Recieved request to start journey."));
-                       };
+                       options.RecordException = true;
                    })
                    .AddEntityFrameworkCoreInstrumentation(options => options.SetDbStatementForText = true)
                    .AddJaegerExporter(options =>
