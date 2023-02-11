@@ -21,19 +21,7 @@ public static class ServiceCollectionExtension
                    .SetResourceBuilder(ResourceBuilder.CreateDefault().AddService(ORCHESTRATOR_SOURCE_NAME))
                    .AddHttpClientInstrumentation()
                    .AddGrpcClientInstrumentation(options => options.SuppressDownstreamInstrumentation = true)
-                   .AddAspNetCoreInstrumentation(options =>
-                   {
-                       options.Filter = (context) =>
-                       {
-                           // filter out these paths
-                           string[] urls = { "" };
-                           return !urls.Contains(context.Request.Path.Value);
-                       };
-                   })
-                   .AddZipkinExporter(options =>
-                   {
-                       options.Endpoint = new Uri("http://zipkin:9411/api/v2/spans");
-                   })
+                   .AddAspNetCoreInstrumentation(options => options.RecordException = true)
                    .AddJaegerExporter(options =>
                    {
                        options.AgentHost = "jaeger";

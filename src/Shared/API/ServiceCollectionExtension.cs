@@ -1,8 +1,11 @@
 ﻿using MassTransit;
+using Microsoft.AspNetCore.Http;
 using Microsoft.Extensions.DependencyInjection;
 using OpenTelemetry;
 using OpenTelemetry.Resources;
 using OpenTelemetry.Trace;
+using System.Diagnostics;
+using System.Text.Json;
 
 namespace Shared.API;
 
@@ -24,15 +27,37 @@ public static class ServiceCollectionExtension
                        options.Filter = (context) =>
                        {
                            // filter out these paths
-                           string[] urls = { "/swagger/v1/swagger.json", "/_vs/browserLink", "/_framework/aspnetcore-browser-refresh.js", "/swagger/index.html" };
+                           string[] urls =
+                           {
+                               "/swagger/v1/swagger.json",
+                               "/_vs/browserLink",
+                               "/_framework/aspnetcore-browser-refresh.js",
+                               "/swagger/index.html",
+                               "/swagger/favicon-32x32.png",
+                               "/favicon.ico",
+                               "/swagger/swagger-ui-bundle.js",
+                               "/swagger/swagger-ui-bundle.js",
+                               "/swagger/swagger-ui.css",
+                               "/"
+                           };
                            return !urls.Contains(context.Request.Path.Value);
+                       };
+
+                       options.EnrichWithHttpRequest = (activity, request) =>
+                       {
+
+                           if (request.Path.ToString().Contains("/journey/start"))
+                           {
+                               activity?.AddEvent(new ActivityEvent("Recieved request to start journey."));
+                           }
+                       };
+
+                       options.EnrichWithHttpResponse = (activity, response) =>
+                       {
+                           activity?.AddEvent(new ActivityEvent("Recieved request to start journey."));
                        };
                    })
                    .AddEntityFrameworkCoreInstrumentation(options => options.SetDbStatementForText = true)
-                   .AddZipkinExporter(options =>
-                   {
-                       options.Endpoint = new Uri("http://zipkin:9411/api/v2/spans");
-                   })
                    .AddJaegerExporter(options =>
                    {
                        options.AgentHost = "jaeger";

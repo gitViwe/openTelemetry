@@ -2,6 +2,7 @@ using API.MessagePublisher;
 using API.Persistance;
 using Microsoft.AspNetCore.Mvc;
 using Microsoft.EntityFrameworkCore;
+using Shared;
 using Shared.API;
 using System.Diagnostics;
 
@@ -29,30 +30,24 @@ if (app.Environment.IsDevelopment())
 app.UseHttpsRedirection();
 app.UseCors();
 
-app.MapPost("/journey/start", async (JourneyRequest request, [FromServices] JourneyDbContext dbContext, [FromServices] JourneyStartPublisher publisher) =>
+app.MapPost("/journey/start", async ([FromBody] JourneyRequest request, [FromServices] JourneyDbContext dbContext, [FromServices] JourneyStartPublisher publisher) =>
 {
-    var activity = Activity.Current;
-    activity?.AddEvent(new ActivityEvent("Recieved request to start journey."));
-    activity?.AddEvent(new ActivityEvent("Ensure database is created and schema is up to date."));
     await dbContext.Database.EnsureCreatedAsync();
 
     var userId = Guid.NewGuid();
+    var activity = Activity.Current;
     activity?.SetTag("api.user.id", userId);
     activity?.SetTag("api.user.username", request.Username);
 
-    activity?.AddEvent(new ActivityEvent("Add journey request to database."));
     var entry = new JourneyEntry(userId, request.Username, DateTime.UtcNow);
     await dbContext.JourneyEntries.AddAsync(entry);
     await dbContext.SaveChangesAsync();
 
-    activity?.AddEvent(new ActivityEvent("Publish journey request message to broker."));
     await publisher.PublishAsync(entry, CancellationToken.None);
 
-    Results.Ok();
+    return Results.Ok("api.user.id=" + entry.Id.ToString());
 })
 .WithName("Start Journey")
 .WithOpenApi();
 
 app.Run();
-
-public record JourneyRequest(string Username);
