@@ -1,5 +1,6 @@
 using Microsoft.AspNetCore.Server.Kestrel.Core;
 using Pilgrim.Services;
+using Shared;
 using Shared.Pilgrim;
 
 var builder = WebApplication.CreateBuilder(args);
@@ -9,7 +10,10 @@ var builder = WebApplication.CreateBuilder(args);
 
 // Add services to the container.
 builder.Services.AddGrpc();
-builder.Services.AddPilgrimOpenTelemetry();
+builder.Services
+    .AddSingleton<SuperHeroData>()
+    .AddPilgrimSeqLogging()
+    .AddPilgrimOpenTelemetry();
 builder.WebHost.ConfigureKestrel(options =>
 {
     options.ListenAnyIP(5235, options => options.Protocols = HttpProtocols.Http2);

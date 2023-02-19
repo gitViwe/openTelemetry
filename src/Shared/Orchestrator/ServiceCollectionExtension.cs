@@ -1,5 +1,6 @@
 ﻿using Grpc.Net.Client.Configuration;
 using Microsoft.Extensions.DependencyInjection;
+using Microsoft.Extensions.Logging;
 using OpenTelemetry;
 using OpenTelemetry.Resources;
 using OpenTelemetry.Trace;
@@ -69,5 +70,10 @@ public static class ServiceCollectionExtension
 
             };
         }
+    }
+
+    public static IServiceCollection AddOrchestratorSeqLogging(this IServiceCollection services)
+    {
+        return services.AddLogging(builder => builder.AddSeq("http://seq:5341"));
     }
 }

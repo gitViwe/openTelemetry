@@ -32,25 +32,33 @@ public class JourneyStartConsumer : IConsumer<JourneyMessage>
 
     public async Task Consume(ConsumeContext<JourneyMessage> context)
     {
-        using var activity = PropagateContext(context.Headers.GetAll());
-        activity?.AddEvent(new ActivityEvent("Propagating the activity context via message headers."));
+        try
+        {
+            using var activity = PropagateContext(context.Headers.GetAll());
+            activity?.AddEvent(new ActivityEvent("Propagating the activity context via message headers."));
 
-        // call service 01
-        activity?.AddEvent(new ActivityEvent("Starting the request to the landmark service."));
-        var landmarkResponse = await _landmarkerClient.ReachLandmarkAsync(new LandmarkRequest { Name = context.Message.Username });
-        activity?.SetTag("orchestrator.landmark.response.message", landmarkResponse.Message);
+            // call service 01
+            activity?.AddEvent(new ActivityEvent("Starting the request to the landmark service."));
+            var landmarkResponse = await _landmarkerClient.ReachLandmarkAsync(new LandmarkRequest { Name = context.Message.Username });
+            activity?.SetTag("orchestrator.landmark.response.message", landmarkResponse.Message);
 
-        // call service 02
-        activity?.AddEvent(new ActivityEvent("Starting the request to the challenge service."));
-        var challengeResponse = await _challengerClient.FaceChallengeAsync(new ChallengeRequest { Name = context.Message.Username });
-        activity?.SetTag("orchestrator.challenge.response.message", challengeResponse.Message);
+            // call service 02
+            activity?.AddEvent(new ActivityEvent("Starting the request to the challenge service."));
+            var challengeResponse = await _challengerClient.FaceChallengeAsync(new ChallengeRequest { Name = context.Message.Username });
+            activity?.SetTag("orchestrator.challenge.response.message", challengeResponse.Message);
 
-        // call service 03
-        activity?.AddEvent(new ActivityEvent("Starting the request to the pilgrim service."));
-        var pilgrimResponse = await _pilgrimageClient.EndPilgrimageAsync(new PilgrimRequest { Name = context.Message.Username });
-        activity?.SetTag("orchestrator.pilgrim.response.message", pilgrimResponse.Message);
+            // call service 03
+            activity?.AddEvent(new ActivityEvent("Starting the request to the pilgrim service."));
+            var pilgrimResponse = await _pilgrimageClient.EndPilgrimageAsync(new PilgrimRequest { Name = context.Message.Username });
+            activity?.SetTag("orchestrator.pilgrim.response.message", pilgrimResponse.Message);
 
-        activity?.AddEvent(new ActivityEvent("Orchestration complete!"));
+            activity?.AddEvent(new ActivityEvent("Orchestration complete!"));
+        }
+        catch (Exception ex)
+        {
+            _logger.LogError(ex, "Failed to orchestrate journey message");
+            throw;
+        }
     }
 
     private Activity? PropagateContext(IEnumerable<KeyValuePair<string, object>> headers)

@@ -9,11 +9,14 @@ using System.Diagnostics;
 var builder = WebApplication.CreateBuilder(args);
 
 // Add services to the container.
-builder.Services.AddAPICors();
-builder.Services.AddAPIOpenTelemetry();
-builder.Services.AddAPIMassTransit();
-builder.Services.AddDbContext<JourneyDbContext>(options => options.UseNpgsql("server=postgres;port=5432;user id=user;password=pass;database=journey_database"));
-builder.Services.AddTransient<JourneyStartPublisher>();
+builder.Services
+            .AddAPICors()
+            .AddAPIMassTransit()
+            .AddAPISeqLogging()
+            .AddDbContext<JourneyDbContext>(options => options.UseNpgsql("server=postgres;port=5432;user id=user;password=pass;database=journey_database"))
+            .AddTransient<JourneyStartPublisher>()
+            .AddAPIOpenTelemetry();
+
 // Learn more about configuring Swagger/OpenAPI at https://aka.ms/aspnetcore/swashbuckle
 builder.Services.AddEndpointsApiExplorer();
 builder.Services.AddSwaggerGen();
@@ -34,18 +37,12 @@ app.MapPost("/journey/start", async ([FromBody] JourneyRequest request, [FromSer
 {
     await dbContext.Database.EnsureCreatedAsync();
 
-    var userId = Guid.NewGuid();
-    var activity = Activity.Current;
-    activity?.SetTag("api.user.id", userId);
-    activity?.SetTag("api.user.username", request.Username);
-
-    var entry = new JourneyEntry(userId, request.Username, DateTime.UtcNow);
-    await dbContext.JourneyEntries.AddAsync(entry);
+    var current = await dbContext.JourneyEntries.AddAsync(new JourneyEntry(Guid.NewGuid(), request.Username, DateTime.UtcNow));
     await dbContext.SaveChangesAsync();
 
-    await publisher.PublishAsync(entry, CancellationToken.None);
+    await publisher.PublishAsync(current.Entity, CancellationToken.None);
 
-    return Results.Ok("api.user.id=" + entry.Id.ToString());
+    return Results.Ok("api.user.id=" + current.Entity.Id.ToString());
 })
 .WithName("Start Journey")
 .WithOpenApi();

@@ -66,3 +66,13 @@ services:
     ports:
       - "5672:5672" # rabbit itself
       - "15672:15672" # management ui
+
+  seq:
+    image: "datalust/seq:2021"
+    hostname: seq
+    container_name: seq
+    ports:
+      - "5341:5341" # ingestion API
+      - "5555:80" # ui
+    environment:
+        ACCEPT_EULA: "Y"

@@ -9,6 +9,7 @@ using IHost host = Host.CreateDefaultBuilder(args)
     {
         services.AddOrchestratorOpenTelemetry();
         services.RegisterOrchestratorGrpcClient();
+        services.AddOrchestratorSeqLogging();
 
         services.AddMassTransit(configure =>
         {

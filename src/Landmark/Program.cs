@@ -1,5 +1,6 @@
 using Landmark.Services;
 using Microsoft.AspNetCore.Server.Kestrel.Core;
+using Shared;
 using Shared.Landmark;
 
 var builder = WebApplication.CreateBuilder(args);
@@ -9,7 +10,10 @@ var builder = WebApplication.CreateBuilder(args);
 
 // Add services to the container.
 builder.Services.AddGrpc();
-builder.Services.AddLandmarkOpenTelemetry();
+builder.Services
+    .AddSingleton<SuperHeroData>()
+    .AddLandmarkSeqLogging()
+    .AddLandmarkOpenTelemetry();
 builder.WebHost.ConfigureKestrel(options =>
 {
     options.ListenAnyIP(5251, options => options.Protocols = HttpProtocols.Http2);
