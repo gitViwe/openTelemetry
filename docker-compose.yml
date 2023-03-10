@@ -12,6 +12,9 @@ services:
         ASPNETCORE_ENVIRONMENT: Development
     ports:
       - 5043:80
+    links:
+      - postgres
+      - seq
 
   orchestrator:
     hostname: orchestrator
@@ -19,6 +22,8 @@ services:
     build:
         context: src/
         dockerfile: Orchestrator/Dockerfile
+    links:
+      - seq
 
   challenge-service:
     hostname: challenge
@@ -26,6 +31,8 @@ services:
     build:
         context: src/
         dockerfile: Challenge/Dockerfile
+    links:
+      - seq
 
   landmark-service:
     hostname: landmark
@@ -33,6 +40,8 @@ services:
     build:
         context: src/
         dockerfile: Landmark/Dockerfile
+    links:
+      - seq
 
   pilgrim-service:
     hostname: pilgrim
@@ -40,6 +49,8 @@ services:
     build:
         context: src/
         dockerfile: Pilgrim/Dockerfile
+    links:
+      - seq
 
   jaeger:
     image: jaegertracing/all-in-one:1
