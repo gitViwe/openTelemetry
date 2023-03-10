@@ -42,7 +42,7 @@ app.MapPost("/journey/start", async ([FromBody] JourneyRequest request, [FromSer
 
     await publisher.PublishAsync(current.Entity, CancellationToken.None);
 
-    return Results.Accepted("api.user.id=" + current.Entity.Id.ToString());
+    return Results.Accepted(null, "api.user.id=" + current.Entity.Id.ToString());
 })
 .WithName("Start Journey")
 .WithOpenApi();
