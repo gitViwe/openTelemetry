@@ -59,7 +59,7 @@ public static class ServiceCollectionExtension
                         Names = { MethodName.Default },
                         RetryPolicy= new RetryPolicy()
                         {
-                            MaxAttempts = 5,
+                            MaxAttempts = 3,
                             InitialBackoff= TimeSpan.FromSeconds(2),
                             MaxBackoff = TimeSpan.FromSeconds(5),
                             BackoffMultiplier = 1.5,
