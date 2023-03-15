@@ -41,21 +41,21 @@ public class ChallengerService : Challenger.ChallengerBase
     {
         int winCount = 0;
 
-        ChallengeHero(_superHeroes.RandomElement(), _superHeroes.RandomElement(), name, activity);
+        ChallengeHero(_superHeroes.RandomElement(), name, activity);
         await Task.Delay(500);
-        ChallengeHero(_superHeroes.RandomElement(), _superHeroes.RandomElement(), name, activity);
+        ChallengeHero(_superHeroes.RandomElement(), name, activity);
         await Task.Delay(500);
-        ChallengeHero(_superHeroes.RandomElement(), _superHeroes.RandomElement(), name, activity);
+        ChallengeHero(_superHeroes.RandomElement(), name, activity);
         await Task.Delay(500);
 
-        void ChallengeHero(SuperHeroResponse superHero, SuperHeroResponse rival, string name, Activity? activity)
+        void ChallengeHero(SuperHeroResponse superHero, string name, Activity? activity)
         {
-            bool victory = superHero.Powerstats.Power > rival.Powerstats.Power;
+            bool victory = new Random().Next(150) > superHero.Powerstats.Power;
             string result = victory
                 ? " was victorious against "
                 : " was defeated by ";
 
-            activity?.AddEvent(new ActivityEvent($"{superHero.Name} from {name}'s team, {result} {superHero.Name} from {rival.Connections.GroupAffiliation}."));
+            activity?.AddEvent(new ActivityEvent($"{name}'s team, {result} {superHero.Name} from {superHero.Connections.GroupAffiliation}."));
 
             if (victory)
             {
