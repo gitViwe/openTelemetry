@@ -30,4 +30,5 @@ Things you need to use the software and how to install them.
 
 * Then navigate to [http://localhost:5043/swagger](http://localhost:5043/swagger) and send a request.
 * View traces via Jaeger at [http://localhost:16686](http://localhost:16686)
+* View logs via Seq at [http://localhost:5555/#/events](http://localhost:5555/#/events)
 * Access RabittMQ UI at [http://localhost:515672](http://localhost:15672) Username: `guest` Password: `guest`

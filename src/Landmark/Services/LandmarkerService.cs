@@ -13,7 +13,7 @@ public class LandmarkerService : Landmarker.LandmarkerBase
 
     public LandmarkerService(SuperHeroData heroData)
     {
-        _superHeroes = heroData.GetEnumerableAsync().Result;
+        _superHeroes = heroData.GetEnumerableAsync().Result.Where(x => !string.IsNullOrWhiteSpace(x.Work.Base));
     }
 
     public override async Task<LandmarkReply> ReachLandmark(LandmarkRequest request, ServerCallContext context)

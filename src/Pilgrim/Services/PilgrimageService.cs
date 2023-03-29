@@ -13,7 +13,7 @@ public class PilgrimageService : Pilgrimage.PilgrimageBase
 
     public PilgrimageService(SuperHeroData heroData)
     {
-        _superHeroes = heroData.GetEnumerableAsync().Result;
+        _superHeroes = heroData.GetEnumerableAsync().Result.Where(x => !string.IsNullOrWhiteSpace(x.Biography.PlaceOfBirth));
     }
 
     public override Task<PilgrimReply> EndPilgrimage(PilgrimRequest request, ServerCallContext context)
@@ -24,7 +24,7 @@ public class PilgrimageService : Pilgrimage.PilgrimageBase
 
         return Task.FromResult(new PilgrimReply
         {
-            Message = "Well done " + request.Name + ". Your journe has come to an end."
+            Message = "Well done " + request.Name + ". Your journey has come to an end."
         });
     }
 }

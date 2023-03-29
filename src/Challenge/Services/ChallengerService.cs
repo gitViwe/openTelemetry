@@ -16,7 +16,7 @@ public class ChallengerService : Challenger.ChallengerBase
     public ChallengerService(ILogger<ChallengerService> logger, SuperHeroData heroData)
     {
         _logger = logger;
-        _superHeroes = heroData.GetEnumerableAsync().Result;
+        _superHeroes = heroData.GetEnumerableAsync().Result.Where(x => !string.IsNullOrWhiteSpace(x.Connections.GroupAffiliation));
     }
 
     public override async Task<ChallengeReply> FaceChallenge(ChallengeRequest request, ServerCallContext context)
